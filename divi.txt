@@ -1,0 +1,144 @@
+mysql> create database milestones;
+Query OK, 1 row affected (0.23 sec)
+
+mysql> use milestones;
+Database changed
+mysql> create table milestones(tid int,name varchar(20),dept varchar(20),salary int,gender varchar(20));
+Query OK, 0 rows affected (3.17 sec)
+
+mysql> insert into teachers values(1,'divi','computer',15000,'female'),(2,'pavi','history',15000,'female'),(3,'vicky','computer',16000,'male'),(4,'jhansi','history',14000,'female'),(5,'ravi','computer',16000,'male');
+ERROR 1146 (42S02): Table 'milestones.teachers' doesn't exist
+mysql> insert into milestones values(1,'divi','computer',15000,'female'),(2,'pavi','history',15000,'female'),(3,'vicky','computer',16000,'male'),(4,'jhansi','history',14000,'female'),(5,'ravi','computer',16000,'male');
+Query OK, 5 rows affected (0.79 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from milestones;
++------+--------+----------+--------+--------+
+| tid  | name   | dept     | salary | gender |
++------+--------+----------+--------+--------+
+|    1 | divi   | computer |  15000 | female |
+|    2 | pavi   | history  |  15000 | female |
+|    3 | vicky  | computer |  16000 | male   |
+|    4 | jhansi | history  |  14000 | female |
+|    5 | ravi   | computer |  16000 | male   |
++------+--------+----------+--------+--------+
+5 rows in set (0.15 sec)
+
+mysql> select * from milestones where dept='history';
++------+--------+---------+--------+--------+
+| tid  | name   | dept    | salary | gender |
++------+--------+---------+--------+--------+
+|    2 | pavi   | history |  15000 | female |
+|    4 | jhansi | history |  14000 | female |
++------+--------+---------+--------+--------+
+2 rows in set (0.15 sec)
+
+mysql> alter table milestones add dob date after salary;
+Query OK, 0 rows affected (1.38 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from milestones;
++------+--------+----------+--------+------+--------+
+| tid  | name   | dept     | salary | dob  | gender |
++------+--------+----------+--------+------+--------+
+|    1 | divi   | computer |  15000 | NULL | female |
+|    2 | pavi   | history  |  15000 | NULL | female |
+|    3 | vicky  | computer |  16000 | NULL | male   |
+|    4 | jhansi | history  |  14000 | NULL | female |
+|    5 | ravi   | computer |  16000 | NULL | male   |
++------+--------+----------+--------+------+--------+
+5 rows in set (0.00 sec)
+
+mysql> update milestones set dob='2023.11.12' where tid=1;
+Query OK, 1 row affected, 1 warning (0.19 sec)
+Rows matched: 1  Changed: 1  Warnings: 1
+
+mysql> update milestones set dob='2023.11.13' where tid=2;
+Query OK, 1 row affected, 1 warning (0.21 sec)
+Rows matched: 1  Changed: 1  Warnings: 1
+
+mysql> update milestones set dob='2023.11.17' where tid=3;
+Query OK, 1 row affected, 1 warning (0.29 sec)
+Rows matched: 1  Changed: 1  Warnings: 1
+
+mysql> update milestones set dob='2023.11.20' where tid=4;
+Query OK, 1 row affected, 1 warning (0.10 sec)
+Rows matched: 1  Changed: 1  Warnings: 1
+
+mysql> update milestones set dob='2023.11.25' where tid=5;
+Query OK, 1 row affected, 1 warning (0.22 sec)
+Rows matched: 1  Changed: 1  Warnings: 1
+
+mysql> select * from milestones;
++------+--------+----------+--------+------------+--------+
+| tid  | name   | dept     | salary | dob        | gender |
++------+--------+----------+--------+------------+--------+
+|    1 | divi   | computer |  15000 | 2023-11-12 | female |
+|    2 | pavi   | history  |  15000 | 2023-11-13 | female |
+|    3 | vicky  | computer |  16000 | 2023-11-17 | male   |
+|    4 | jhansi | history  |  14000 | 2023-11-20 | female |
+|    5 | ravi   | computer |  16000 | 2023-11-25 | male   |
++------+--------+----------+--------+------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select name,dob from milestones orderby dob asc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'dob asc' at line 1
+mysql> select name,dob from milestones orderby dob ASC;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'dob ASC' at line 1
+mysql> select name,dob from milestones order by dob ASC;
++--------+------------+
+| name   | dob        |
++--------+------------+
+| divi   | 2023-11-12 |
+| pavi   | 2023-11-13 |
+| vicky  | 2023-11-17 |
+| jhansi | 2023-11-20 |
+| ravi   | 2023-11-25 |
++--------+------------+
+5 rows in set (0.04 sec)
+
+mysql> select name,dept,salary from milestones where gender='male';
++-------+----------+--------+
+| name  | dept     | salary |
++-------+----------+--------+
+| vicky | computer |  16000 |
+| ravi  | computer |  16000 |
++-------+----------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select count(salary) from milestones where salary<10000;
++---------------+
+| count(salary) |
++---------------+
+|             0 |
++---------------+
+1 row in set (0.13 sec)
+
+mysql> insert into milestones values(6,'ananthi','computer',13000,'2023.11.26','female');
+Query OK, 1 row affected, 1 warning (0.13 sec)
+
+mysql> select min(salary) from milestones;
++-------------+
+| min(salary) |
++-------------+
+|       13000 |
++-------------+
+1 row in set (0.07 sec)
+
+mysql> select * from milestones where salary=(select min(salary)from milestones where salary>(select min(salary)from milestones));
++------+--------+---------+--------+------------+--------+
+| tid  | name   | dept    | salary | dob        | gender |
++------+--------+---------+--------+------------+--------+
+|    4 | jhansi | history |  14000 | 2023-11-20 | female |
++------+--------+---------+--------+------------+--------+
+1 row in set (0.09 sec)
+
+mysql> select avg(salary) from milestones where dept='history';
++-------------+
+| avg(salary) |
++-------------+
+|  14500.0000 |
++-------------+
+1 row in set (0.06 sec)
+
+mysql> Terminal close -- exit!
